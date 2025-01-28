@@ -24,6 +24,15 @@ function sortTorrents(
         {[sortBy.direction]: `${property}Total`} as SortRule,
       );
       break;
+    case 'dateActive':
+      sortRules.push({
+        [sortBy.direction]: (p: TorrentProperties) => {
+          if (p.dateActive == -1) {
+            return Infinity;
+          }
+          return p.dateActive;
+        },
+      } as SortRule);
     case 'eta':
       sortRules.push({
         [sortBy.direction]: (p: TorrentProperties) => {

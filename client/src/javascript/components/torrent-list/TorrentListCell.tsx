@@ -72,8 +72,6 @@ const DateTimeCell: FC<{datetime: number}> = observer(({datetime}: {datetime: nu
     return <span>undefined</span>;
   }
 
-  console.log("DEBUG: datetime: " + String(datetime));
-
   if (datetime === 0) {
     return <span>{i18n._('torrents.details.general.date.active.unknown')}</span>;
   }
