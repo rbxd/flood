@@ -11,7 +11,7 @@
 # publish the result image unless it was composed in a clean environment.
 
 ARG BUILDPLATFORM=amd64
-ARG NODE_IMAGE=docker.io/node:alpine
+ARG NODE_IMAGE=docker.io/node:22-alpine
 
 FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS nodebuild
 
@@ -57,10 +57,10 @@ ENTRYPOINT ["npm", "--prefix=/usr/src/app/", "run", "start", "--", "--host=0.0.0
 # docker exec -it ${container_id} npm --prefix=/usr/src/app/ run start:development:client
 
 # rtorrent-flood image
-FROM docker.io/jesec/rtorrent:master AS rtorrent
-FROM flood AS rtorrent-flood
+#FROM docker.io/jesec/rtorrent:master AS rtorrent
+#FROM flood AS rtorrent-flood
 
 # Copy rTorrent
-COPY --from=rtorrent / /
+#COPY --from=rtorrent / /
 
-ENTRYPOINT ["npm", "--prefix=/usr/src/app/", "run", "start", "--", "--host=0.0.0.0", "--rtorrent"]
+#ENTRYPOINT ["npm", "--prefix=/usr/src/app/", "run", "start", "--", "--host=0.0.0.0", "--rtorrent"]

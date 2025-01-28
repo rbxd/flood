@@ -7,6 +7,7 @@ import {Trans, useLingui} from '@lingui/react';
 import {
   CalendarFinished,
   CalendarCreated,
+  CalendarActive,
   Calendar,
   CheckmarkThick,
   Clock,
@@ -42,6 +43,7 @@ const ICONS: Partial<Record<TorrentListColumn, JSX.Element>> = {
   dateAdded: <Calendar />,
   dateCreated: <CalendarCreated />,
   dateFinished: <CalendarFinished />,
+  dateActive: <CalendarActive />,
   isPrivate: <Lock />,
   message: <TrackerMessage />,
   percentComplete: <DownloadThick />,
@@ -63,7 +65,39 @@ const DateCell: FC<{date: number}> = observer(({date}: {date: number}) => {
   return <span>{i18n.date(new Date(date * 1000))}</span>;
 });
 
+const DateTimeCell: FC<{datetime: number}> = observer(({datetime}: {datetime: number}) => {
+  const {i18n} = useLingui();
+
+  if (!datetime) {
+    return <span>undefined</span>;
+  }
+
+  console.log("DEBUG: datetime: " + String(datetime));
+
+  if (datetime === 0) {
+    return <span>{i18n._('torrents.details.general.date.active.unknown')}</span>;
+  }
+
+  if (datetime === -1) {
+    return <span>{i18n._('torrents.details.general.date.active.now')}</span>;
+  }
+
+  return <span>{i18n.date(new Date(datetime * 1000), {
+    year: 'numeric',
+    month: 'long',
+    day: '2-digit',
+    hour: 'numeric',
+    minute: 'numeric',
+  })}</span>;
+
+});
+
+
 const ETACell: FC<{eta: number}> = observer(({eta}: {eta: number}) => (eta ? <Duration value={eta} /> : null));
+
+const LastActiveCell: FC<{ts: number}> = observer(({ts}: {ts: number}) => {
+  (ts ? <Duration value={parseInt((Date.now()-ts)/1000)} /> : null)
+});
 
 const PeerCell: FC<{peersConnected: number; totalPeers: number}> = observer(
   ({peersConnected, totalPeers}: {peersConnected: number; totalPeers: number}) => {
@@ -120,6 +154,8 @@ const DefaultTorrentListCellContent: FC<TorrentListCellContentProps> = observer(
         return <DateCell date={torrent[column]} />;
       case 'dateFinished':
         return <DateCell date={torrent[column]} />;
+      case 'dateActive':
+        return <DateTimeCell datetime={torrent[column]} />;
       case 'downRate':
         return <Size value={torrent[column]} isSpeed />;
       case 'upRate':
